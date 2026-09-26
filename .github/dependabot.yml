@@ -10,6 +10,8 @@ updates:
           - minor
           - patch
     ignore:
+      - dependency-name: "@babel/*"
+        update-types: ["version-update:semver-major"]
       # React Native pins a compatible React pair. Upgrade these only when
       # upgrading React Native and validating the complete combination.
       - dependency-name: react

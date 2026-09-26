@@ -146,6 +146,28 @@ describe('classifyNetworkQuality', () => {
     ).toMatchObject({ quality: 'excellent', qualitySource: 'probe' });
   });
 
+  it('does not apply validation grace to isValidated null on iOS', () => {
+    for (const networkChangedAt of [
+      NOW,
+      NOW - DEFAULT_CONFIG.validationGraceMs,
+    ]) {
+      const result = classifyNetworkQuality(
+        snapshot({ isConnected: true, isValidated: null }),
+        probe(),
+        undefined,
+        NOW,
+        { networkChangedAt }
+      );
+
+      expect(result).toMatchObject({
+        quality: 'excellent',
+        qualitySource: 'probe',
+      });
+      expect(result.reasons).not.toContain('validating');
+      expect(result.reasons).not.toContain('not-validated');
+    }
+  });
+
   it('reports validating during the validation grace period', () => {
     expect(
       classifyNetworkQuality(
